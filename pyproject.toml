@@ -1,0 +1,22 @@
+[project]
+name = "vecdb"
+version = "0.1.0"
+description = "Vector database built from scratch: HNSW and IVF-PQ indexes, WAL durability, filtered search planner, HTTP API"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Rishi Golechha" }]
+
+[project.scripts]
+vecdb = "vecdb.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["vecdb"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning"]
