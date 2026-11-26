@@ -159,3 +159,29 @@ def test_replay_skips_records_already_in_snapshot(tmp_path):
     again = Collection(path)
     assert again.recovery["skipped"] == 50 and again.recovery["replayed"] == 0
     assert len(again) == 50 and again.index.count == 50
+
+
+def test_cost_model_planner():
+    from vecdb.collection import choose_filtered_plan
+
+    n = 1_000_000
+    assert choose_filtered_plan(500_000, n, 64) == "hnsw_filtered"
+    assert choose_filtered_plan(1_000, n, 64) == "exact_filtered"
+    assert choose_filtered_plan(0, n, 64) == "exact_filtered"
+    # a larger beam makes HNSW more expensive, so exact wins over a wider range
+    m = 60_000
+    assert choose_filtered_plan(m, n, 16) == "hnsw_filtered"
+    assert choose_filtered_plan(m, n, 512) == "exact_filtered"
+    # fixed override
+    assert choose_filtered_plan(5, n, 64, exact_max_points=3) == "hnsw_filtered"
+
+
+def test_default_planner_in_collection(tmp_path):
+    X = _data(n=3000)
+    col = Collection(str(tmp_path / "c"), dim=8)
+    _fill(col, X)
+    # small collection: scanning 1,000 matches is cheaper than a 64-wide filtered beam
+    assert col.search(X[0], k=5, filter={"color": "red"})["plan"] == "exact_filtered"
+    # with a tiny beam the graph becomes the cheaper estimate
+    r = col.search(X[0], k=1, ef=1, filter={"color": "red"})
+    assert r["plan"] == "hnsw_filtered" and r["hits"][0]["payload"]["color"] == "red"

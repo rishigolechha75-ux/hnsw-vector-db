@@ -12,11 +12,9 @@ The query planner picks between two strategies for filtered queries:
 * ``exact_filtered``: brute-force over just the matching points. Cost is linear in
   the number of matches, so it wins when the filter is selective.
 
-``exact_max_points`` is the number of matching points at or below which the exact
-plan is used. An absolute count (rather than a selectivity fraction) is used because
-brute-force cost grows with the number of matches, while filtered-HNSW cost depends
-mostly on selectivity and only weakly (~log n) on collection size. The default is
-taken from the measured crossover in reports/*/filtered.json (see README).
+The choice is made by a small cost model (:func:`choose_filtered_plan`) whose
+constants were fitted to reports/*/filtered.json; benchmarks/eval_planner.py scores
+it against fixed thresholds.
 """
 from __future__ import annotations
 
@@ -33,7 +31,33 @@ from .wal import OP_DELETE, OP_UPSERT, Record, WriteAheadLog
 
 METRICS = ("cosine", "l2")
 SCALARS = (str, int, float, bool)
-EXACT_MAX_POINTS_DEFAULT = 10_000
+
+# Cost-model constants, fitted on GloVe-25 (reports/*/filtered.json):
+#   filtered HNSW distance evaluations ~= COMPS_PER_EF * ef * selectivity ** -SEL_EXPONENT
+#   one brute-force distance (BLAS, sequential) is ~EXACT_SPEEDUP x cheaper than one
+#   graph distance evaluation (random access + heap work).
+COMPS_PER_EF = 20.0
+SEL_EXPONENT = 0.8
+EXACT_SPEEDUP = 5.7
+
+
+def choose_filtered_plan(matching: int, n_live: int, ef: int,
+                         exact_max_points: Optional[int] = None) -> str:
+    """Pick ``"exact_filtered"`` or ``"hnsw_filtered"`` for a filter matching
+    ``matching`` of ``n_live`` points.
+
+    Brute force costs ``matching`` cheap distance evaluations. Filtered HNSW costs
+    roughly ``COMPS_PER_EF * ef / selectivity**0.8`` expensive ones (the beam must
+    see more non-matching nodes as matches get rarer). Use brute force when it is
+    estimated to be cheaper. A fixed ``exact_max_points`` overrides the model.
+    """
+    if matching == 0:
+        return "exact_filtered"
+    if exact_max_points is not None:
+        return "exact_filtered" if matching <= exact_max_points else "hnsw_filtered"
+    sel = matching / max(n_live, 1)
+    hnsw_comps = COMPS_PER_EF * max(ef, 1) * sel ** -SEL_EXPONENT
+    return "exact_filtered" if matching < EXACT_SPEEDUP * hnsw_comps else "hnsw_filtered"
 
 
 def _key(v: Any) -> str:
@@ -54,13 +78,13 @@ class Collection:
         metric: ``"cosine"`` (vectors are L2-normalised) or ``"l2"``.
         M, ef_construction: HNSW build parameters.
         fsync: fsync the WAL on every write batch.
-        exact_max_points: filtered queries matching at most this many points use
-            brute force over the matches instead of the graph.
+        exact_max_points: if set, overrides the cost model: filtered queries matching
+            at most this many points use brute force over the matches.
     """
 
     def __init__(self, path: str, dim: Optional[int] = None, metric: str = "cosine",
                  M: int = 16, ef_construction: int = 200, fsync: bool = False,
-                 exact_max_points: int = EXACT_MAX_POINTS_DEFAULT):
+                 exact_max_points: Optional[int] = None):
         self.path = path
         os.makedirs(path, exist_ok=True)
         cfg_path = os.path.join(path, "config.json")
@@ -81,7 +105,7 @@ class Collection:
         self.config = cfg
         self.dim = cfg["dim"]
         self.metric = cfg["metric"]
-        self.exact_max_points = int(exact_max_points)
+        self.exact_max_points = exact_max_points
         self._lock = threading.RLock()
         self._reset_state()
         self.wal = WriteAheadLog(os.path.join(path, "wal.log"), fsync=fsync)
@@ -276,10 +300,9 @@ class Collection:
                 plan = "exact"
             elif mask is None:
                 plan = "hnsw"
-            elif int(mask.sum()) <= self.exact_max_points:
-                plan = "exact_filtered"
             else:
-                plan = "hnsw_filtered"
+                plan = choose_filtered_plan(int(mask.sum()), n_live, ef,
+                                            self.exact_max_points)
             if plan.startswith("exact"):
                 cand = np.nonzero(mask if mask is not None else live)[0]
                 I, D = topk_sq_l2(self.index.vecs[cand], q, k, ids=cand)
