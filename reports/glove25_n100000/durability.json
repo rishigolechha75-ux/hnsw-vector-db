@@ -1,0 +1,11 @@
+{
+  "points": 20000,
+  "batch": 1000,
+  "wal_points_per_s_fsync_False_batch_1000": 970991.6252450877,
+  "wal_points_per_s_fsync_True_batch_1000": 208485.98848611768,
+  "wal_points_per_s_fsync_True_batch_1": 258.42827616921494,
+  "recover_from_wal_s": 1.5804811249836348,
+  "wal_bytes": 3088890,
+  "recover_from_snapshot_s": 0.015066916996147484,
+  "recovered_points": 20000
+}

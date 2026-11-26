@@ -1,0 +1,267 @@
+{
+  "dataset": "glove-25-angular (ann-benchmarks)",
+  "n_base": 1183514,
+  "n_queries": 1000,
+  "k": 10,
+  "M": 16,
+  "ef_construction": 200,
+  "nlist": 4096,
+  "pq_m": 5,
+  "repeats": 3,
+  "machine": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.11.16"
+  },
+  "threads": 1,
+  "sweeps": [
+    {
+      "method": "exact (numpy)",
+      "param": null,
+      "recall": 1.0,
+      "qps": 106.91471307779285,
+      "memory_bytes": 118351400
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 10,
+      "recall": 0.7128,
+      "qps": 87454.94640645754,
+      "dist_comps": 399.521
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 16,
+      "recall": 0.7986,
+      "qps": 61931.80659561062,
+      "dist_comps": 509.291
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 32,
+      "recall": 0.8946,
+      "qps": 36192.108140550525,
+      "dist_comps": 777.997
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 64,
+      "recall": 0.9536,
+      "qps": 19855.978239096803,
+      "dist_comps": 1279.674
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 128,
+      "recall": 0.9862,
+      "qps": 10586.725091250077,
+      "dist_comps": 2211.943
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 256,
+      "recall": 0.9968,
+      "qps": 5531.422175403675,
+      "dist_comps": 3899.736
+    },
+    {
+      "method": "vecdb HNSW",
+      "param": 512,
+      "recall": 0.9995,
+      "qps": 2845.447725431459,
+      "dist_comps": 6921.21
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 1,
+      "recall": 0.2483,
+      "qps": 55680.189419353665
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 2,
+      "recall": 0.3313,
+      "qps": 51430.958417998976
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 4,
+      "recall": 0.3864,
+      "qps": 44718.38532467188
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 8,
+      "recall": 0.4327,
+      "qps": 36424.56473243939
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 16,
+      "recall": 0.4588,
+      "qps": 26720.583112887492
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 32,
+      "recall": 0.4722,
+      "qps": 18086.343994112398
+    },
+    {
+      "method": "vecdb IVF-PQ",
+      "param": 64,
+      "recall": 0.4791,
+      "qps": 10982.10191767539
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 1,
+      "recall": 0.3189,
+      "qps": 35257.718396605575
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 2,
+      "recall": 0.4675,
+      "qps": 30085.630624333557
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 4,
+      "recall": 0.6035,
+      "qps": 25533.4629723292
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 8,
+      "recall": 0.7252,
+      "qps": 20795.2269405238
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 16,
+      "recall": 0.82,
+      "qps": 16253.973667014905
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 32,
+      "recall": 0.8828,
+      "qps": 11891.808327720897
+    },
+    {
+      "method": "vecdb IVF-PQ + rerank100",
+      "param": 64,
+      "recall": 0.9212,
+      "qps": 8053.923725166333
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 10,
+      "recall": 0.7296,
+      "qps": 100345.7714051718
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 16,
+      "recall": 0.8171,
+      "qps": 70907.52775503458
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 32,
+      "recall": 0.9114,
+      "qps": 40956.95935659665
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 64,
+      "recall": 0.9675,
+      "qps": 21472.763137093865
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 128,
+      "recall": 0.9907,
+      "qps": 10701.243495644512
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 256,
+      "recall": 0.9981,
+      "qps": 5196.769168508628
+    },
+    {
+      "method": "FAISS HNSWFlat",
+      "param": 512,
+      "recall": 0.9996,
+      "qps": 2332.405259114053
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 1,
+      "recall": 0.2537,
+      "qps": 211291.77010136578
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 2,
+      "recall": 0.328,
+      "qps": 174855.7437679025
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 4,
+      "recall": 0.392,
+      "qps": 132574.72272891048
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 8,
+      "recall": 0.435,
+      "qps": 93780.7776622225
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 16,
+      "recall": 0.4589,
+      "qps": 59472.33054715459
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 32,
+      "recall": 0.4769,
+      "qps": 34374.351420404084
+    },
+    {
+      "method": "FAISS IVF-PQ",
+      "param": 64,
+      "recall": 0.4842,
+      "qps": 18928.6691355058
+    }
+  ],
+  "build": {
+    "vecdb_hnsw": {
+      "build_s": 177.0686713750183,
+      "count": 1183514,
+      "max_level": 5,
+      "mean_degree_l0": 22.728582002409773,
+      "nodes_above_l0": 73509,
+      "deleted": 0,
+      "memory_bytes": 290561610
+    },
+    "vecdb_ivfpq": {
+      "train_s": 11.276242249994539,
+      "add_s": 7.440009624988306,
+      "code_bytes_per_vector": 5,
+      "memory_bytes_codes": 36792402,
+      "memory_bytes_with_raw": 155143802
+    },
+    "faiss_hnsw": {
+      "build_s": 186.14801454197732
+    },
+    "faiss_ivfpq": {
+      "build_s": 6.636927166982787
+    }
+  }
+}

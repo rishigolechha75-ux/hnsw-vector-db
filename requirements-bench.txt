@@ -1,0 +1,4 @@
+-r requirements.txt
+h5py==3.11.0
+matplotlib==3.9.2
+faiss-cpu==1.8.0

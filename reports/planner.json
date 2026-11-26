@@ -1,0 +1,31 @@
+{
+  "cases": 16,
+  "note": "cost-model constants fitted on these rows",
+  "policies": {
+    "cost model (default)": {
+      "optimal_choices": 15,
+      "worst_ratio_to_best": 0.7257001833536089,
+      "mean_ratio_to_best": 0.9828562614596006
+    },
+    "fixed count <= 10,000": {
+      "optimal_choices": 13,
+      "worst_ratio_to_best": 0.025294152450395867,
+      "mean_ratio_to_best": 0.8513077509577303
+    },
+    "fixed selectivity < 0.1": {
+      "optimal_choices": 15,
+      "worst_ratio_to_best": 0.5495001987190689,
+      "mean_ratio_to_best": 0.9718437624199419
+    },
+    "always HNSW": {
+      "optimal_choices": 5,
+      "worst_ratio_to_best": 0.00010269940524657677,
+      "mean_ratio_to_best": 0.3835126766439134
+    },
+    "always exact": {
+      "optimal_choices": 11,
+      "worst_ratio_to_best": 0.021888244811545315,
+      "mean_ratio_to_best": 0.785474068654874
+    }
+  }
+}
